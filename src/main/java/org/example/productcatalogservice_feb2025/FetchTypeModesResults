@@ -1,0 +1,38 @@
+Fetch Type                  Fetch Mode                      Result
+
+LAZY                          SELECT                        Asked for Products - Queries = 2 select
+                                                            Not asked for Products - Queries = 1 select
+
+
+
+EAGER                         SELECT                        Asked for Products - Queries = 2 select
+                                                            Not asked for Products - Queries = 2 select
+
+
+
+LAZY                          JOIN                          Asked for Products - Queries = 1 Left Join
+                                                            Not asked for Products - Queries = 1 Left Join *Fetch mode gets priority
+
+
+
+EAGER                         JOIN                          Asked for Products - Queries = 1 Left Join
+                                                            Not asked for Products - Queries = 1 Left Join
+
+
+
+LAZY                          SUBSELECT                     Asked for Products - Queries = 2 select
+                                                            Not asked for Products - Queries = 1 select
+
+
+
+EAGER                         SUBSELECT                     Asked for Products - Queries = 2 select
+                                                            Not asked for Products - Queries = 2 select
+
+Summary -->
+    Fetch mode JOIN is dominant over all cases. It does not honor any fetch type.
+
+    In case of FetchMode: SELECT & SUBSELECT, FetchType is honoured which means we will not get Child
+    Entity in lazy loading.
+
+    Incase of FetchMode: SELECT & SUBSELECT, 2 select queries from product and category table. Even though
+    JOIN would have run.
