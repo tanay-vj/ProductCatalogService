@@ -1,11 +1,15 @@
 package org.example.productcatalogservice_feb2025.services;
 
+import org.example.productcatalogservice_feb2025.dtos.Role;
+import org.example.productcatalogservice_feb2025.dtos.UserDTO;
 import org.example.productcatalogservice_feb2025.models.Product;
+import org.example.productcatalogservice_feb2025.models.Scope;
 import org.example.productcatalogservice_feb2025.repos.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +23,9 @@ public class StorageProductService implements  IProductService{
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     @Override
@@ -64,5 +71,27 @@ public class StorageProductService implements  IProductService{
         } else {
             return productOptional.get();
         }
+    }
+
+    @Override
+    public Product getProductBasedOnUserRole(Long productId, Long userId) {
+        Optional<Product> optionalProduct = productRepo.findById(productId);
+        if(optionalProduct.isPresent()) {
+            Product product = optionalProduct.get();
+            if(product.getScope().equals(Scope.LISTED)) {
+                return product;
+            }else if(product.getScope().equals(Scope.UNLISTED)) {
+                //Call UserService and get User Details
+                UserDTO userDto = restTemplate.getForEntity("http://userservice/user/{userId}", UserDTO.class,userId)
+                        .getBody();
+
+                if(userDto.getRole().equals(Role.ADMIN)) {
+                    return product;
+                }
+
+            }
+        }
+
+        return null;
     }
 }

@@ -27,6 +27,8 @@ public class Product extends BaseModel implements Serializable {
     @JsonBackReference
     Category category;
     boolean isPrime;
+    Scope scope;
+
 
     public Product() {
         this.setCreatedAt(new Date());

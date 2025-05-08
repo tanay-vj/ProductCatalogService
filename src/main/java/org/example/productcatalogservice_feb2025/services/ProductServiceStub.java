@@ -25,6 +25,11 @@ public class ProductServiceStub implements IProductService {
     }
 
     @Override
+    public Product getProductBasedOnUserRole(Long productId, Long userId) {
+        return null;
+    }
+
+    @Override
     public Product replaceProduct(Product input, Long id) {
         if (productMap.containsKey(id)) {
             input.setId(id);

@@ -48,6 +48,18 @@ public class ProductController {
 
     }
 
+    @GetMapping("/{productId}/{userId}")
+    public ProductDTO getProductDetailsBasedOnUserRole(@PathVariable Long productId,
+                                                       @PathVariable Long userId) {
+        Product product = productService.getProductBasedOnUserRole(productId, userId);
+        if (product != null) {
+            return from(product);
+        }
+
+        return null;
+    }
+
+
     @PatchMapping("/{id}")
     public ProductDTO updateProductDetails(@PathVariable Long id,
                                      @RequestBody ProductDTO productDTO) {
